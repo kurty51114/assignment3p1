@@ -50,6 +50,38 @@ sudo chown -R webgen:webgen /var/lib/webgen
 sudo chmod u,g+x /var/lib/webgen/bin/generate_index
 ```
 
+5. Move `generate_index.service` and `generate_index.timer` to /etc/systemd/system
+```bash
+mv generate_index.service /etc/systemd/system
+mv generage_index.timer/etc/systemd/system
+```
+
+## Enabling + Testing the `.service` and `.timer` files
+Now that all the files are in their proper locations, we must enable and test the service and timer files to ensure that they are functioning as expected:
+
+1. Reload Systemd configuration files
+```bash
+sudo systemctl daemon-reload
+```
+
+2. Enable/start both service and timer files
+```bash
+sudo systemctl enable generate_index.service
+sudo systemctl enable generate_index.timer
+```
+
+3. Check whether the files are running properly
+```bash
+sudo systemctl status generate_index.service
+systemctl list-timers --all | grep generate_index.timer
+```
+
+>[!Note] 
+> If necessary, use:
+> `sudo journalctl -u generate_index.service`
+> `sudo journalctl -u generate_index.timer`
+> To view the logs of each configuration file.
+
 
 ## References
 [1] McNinch, Nathan. https://learn.bcit.ca/content/enforced/1063362-45842.202430/assignment3p1.pdf
