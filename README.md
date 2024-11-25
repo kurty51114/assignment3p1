@@ -49,5 +49,7 @@ sudo chown -R webgen:webgen /var/lib/webgen
 ```bash
 sudo chmod u,g+x /var/lib/webgen/bin/generate_index
 ```
+
+
 ## References
 [1] McNinch, Nathan. https://learn.bcit.ca/content/enforced/1063362-45842.202430/assignment3p1.pdf
