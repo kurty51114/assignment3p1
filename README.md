@@ -45,9 +45,9 @@ mv generate_index /var/lib/webgen/bin
 sudo chown -R webgen:webgen /var/lib/webgen
 ```
 
-4. Change the permissions of the generate_index script to be executable for the user and group
+4. Change the permissions of the generate_index script to be executable for the user
 ```bash
-sudo chmod u,g+x /var/lib/webgen/bin/generate_index
+sudo chmod u+a /var/lib/webgen/bin/generate_index
 ```
 
 5. Move `generate_index.service` and `generate_index.timer` to /etc/systemd/system
@@ -82,6 +82,52 @@ systemctl list-timers --all | grep generate_index.timer
 > `sudo journalctl -u generate_index.timer`
 > To view the logs of each configuration file.
 
+## nginx configuration for webgen
+To be able to access the information in the index.html file created by the generate_index script from our web browser, we must set up nginx and create a new server based off of our DigitalOcean droplet:
 
+1. Make folders as locations for our server files[2]
+```bash
+mkdir /etc/nginx/sites-available #where the server file is going to go
+mkdir /etc/nginx/sites-enabled #the system that nginx uses to moderate which sites will be enabled/available
+```
+
+2. Move server block file into the sites -available directory 
+```bash
+sudo mv webgen.conf /etc/nginx/sites-available
+```
+
+3. Create symbolic link from the file to the `/etc/nginx/sites-enabled` directory (to enable the server block) [2]
+```bash
+ln -s /etc/nginx/sites-available/webgen.conf /etc/nginx/sites-enabled/webgen.conf
+```
+
+4. Edit the nginx.conf file to have the user be Webgen
+```bash
+sudo nvim /etc/nginx/nginx.conf
+#Inside of the nginx.conf file, look for user _______; and change it to user webgen;
+```
+
+>[!Note] 
+>The `nginx.conf` file may look different than the file provided in the repository; this is just a simplified version that removed content  unnecessary for the purpose of this assignment.[3]
+
+5. Reload systemd configuration files/Start and enable nginx
+```bash
+sudo systemctl daemon-reload
+sudo systemctl start nginx
+sudo systemctl enable nginx
+```
+
+6. Check for errors with nginx and the status of the nginx service with systemctl
+```bash
+sudo nginx -t
+sudo systemctl stats nginx
+```
+
+## `ufw`  Setup
+The final step in our process is to set up `ufw`:
+
+1. First, check to ensure that 
 ## References
 [1] McNinch, Nathan. https://learn.bcit.ca/content/enforced/1063362-45842.202430/assignment3p1.pdf
+[2] Nginx Arch Wiki page. https://wiki.archlinux.org/title/Nginx
+[3] Nginx beginner's guide. https://nginx.org/en/docs/beginners_guide.html
