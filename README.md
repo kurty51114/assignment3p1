@@ -123,11 +123,37 @@ sudo nginx -t
 sudo systemctl stats nginx
 ```
 
-## `ufw`  Setup
+## `ufw`  Setup [4]
 The final step in our process is to set up `ufw`:
 
-1. First, check to ensure that 
+1. Allow SSH and http in the firewall (to be able to access from anywhere)
+```bash
+sudo ufw allow ssh
+sudo ufw allow http
+```
+
+2. Limit ssh connection
+```bash
+sudo ufw limit ssh
+```
+
+3.  Enable ufw
+```bash
+sudo systemctl enable --now ufw.service
+```
+
+>[!Note]
+>To check the status of the firewall and confirm whether it is enabled and working as expected, run
+>`sudo ufw status verbose`
+>If working as expected, you will see an output that resembles the following image:
+>![ufwstatus](ufwstatus.png)
+
+## Final Result
+To access the contents of index.html from a browser, navigate to your preferred browser and enter the ip address of your server (droplet) into the url field. You should see a result that resembles the following image:
+
+![successImage](successImage.png)
 ## References
 [1] McNinch, Nathan. https://learn.bcit.ca/content/enforced/1063362-45842.202430/assignment3p1.pdf
 [2] Nginx Arch Wiki page. https://wiki.archlinux.org/title/Nginx
 [3] Nginx beginner's guide. https://nginx.org/en/docs/beginners_guide.html
+[4] Arch Documentation on ufw. https://wiki.archlinux.org/title/Uncomplicated_Firewall
